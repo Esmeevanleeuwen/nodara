@@ -1,0 +1,2 @@
+<a class="debate-card" href="{{ route('debates.show',$debate->slug) }}"><div class="eyebrow">{{ $debate->category }} · {{ now()->lt($debate->starts_at)?'BINNENKORT':(now()->gt($debate->ends_at)?'AFGELOPEN':'STEMMEN OPEN') }}</div><h3>{{ $debate->title }}</h3><div class="versus">@foreach($debate->participants as $person)<span>{{ $person->name }}</span>@if(!$loop->last)<b>VS</b>@endif
+@endforeach</div><div class="meta">{{ $debate->votes_count }} stemmen <span>Bekijk argumenten ↗</span></div></a>

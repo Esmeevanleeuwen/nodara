@@ -1,0 +1,19 @@
+name: Nodara tests
+on: [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, pdo_mysql, xml
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan test
+      - run: docker compose --profile tools config --quiet
+        env:
+          DB_PASSWORD: ci-only-password
+          DB_ROOT_PASSWORD: ci-only-root-password

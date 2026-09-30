@@ -1,0 +1,3 @@
+@extends('layout')
+@section('title','Politieke en sociale debatten — Nodara')
+@section('content')<p class="eyebrow">VERSCHILLENDE PERSPECTIEVEN</p><div class="section-title"><h1>Wie overtuigt jou?</h1>@auth @if(auth()->user()->is_admin)<a class="button" href="/debat-maken">Maak een debat ↗</a>@endif @endauth</div><p class="lead">Lees de standpunten en stem op de deelnemer met het sterkste betoog.</p><div class="debate-grid">@forelse($debates as $debate)@include('partials.debate-card')@empty<p class="empty">Er zijn nog geen openbare debatten.</p>@endforelse</div>{{ $debates->links('pagination::simple-default') }}@endsection
