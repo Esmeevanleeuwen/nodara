@@ -76,6 +76,21 @@ docker compose exec app php artisan route:list
 
 `docker compose down` stopt de omgeving zonder data te verwijderen. `docker compose down -v` verwijdert ook alle databasegegevens; gebruik dat alleen als je bewust alles wilt wissen.
 
+## Een onderbroken migratie hervatten
+
+Als `migrate` stopt op `Duplicate column name is_admin` of een bestaande platformtabel, kan een eerdere poging al een deel van de structuur hebben aangemaakt. Deze migratie controleert daarom eerst welke onderdelen bestaan en maakt alleen ontbrekende onderdelen aan. Bestaande rijen blijven behouden; de migratiehistorie wordt pas bijgewerkt nadat alle stappen slagen.
+
+Haal de correctie op en bouw alleen de app opnieuw, zodat je bestaande databasekeuze in `.env` behouden blijft:
+
+```sh
+git pull --ff-only
+docker compose up -d --build --no-deps app
+docker compose exec app php artisan config:clear
+docker compose exec app php artisan migrate --force
+```
+
+Gebruik hiervoor geen `migrate:fresh` of `docker compose down -v`; die verwijderen gegevens. Een zelf afwijkend gemaakte tabelstructuur moet apart worden gecontroleerd. Bij XAMPP op Windows blijft `DB_HOST=host.docker.internal`; `DB_HOST=db` verwijst naar de Docker-database.
+
 ## Hosting en Google
 
 Dit project heeft PHP en MySQL nodig. GitHub Pages kan deze backend niet draaien. Gebruik een VPS of Laravel-host met een domein en HTTPS. De meegeleverde Compose-configuratie is voor lokaal gebruik, met phpMyAdmin alleen op localhost.
